@@ -1,9 +1,11 @@
-import { Body, Controller, Get, HttpCode, Param, ParseIntPipe, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Header, Headers, HttpCode, Param, ParseIntPipe, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { IdParamDto } from './dto/idParam.dto';
 import { ParseIdPipe } from './pipes/parseIdPipe';
 import { ZodValidationPipe } from './pipes/zodValidationPipe';
 import { createPropertySchema, CreatePropertyZodDto } from './dto/createPropertyZod.dto';
+import { HeadersDto } from './dto/headers.dto';
+import { RequestHeader } from './pipes/request-header';
 
 @Controller('property')
 export class PropertyController {
@@ -46,20 +48,30 @@ export class PropertyController {
     //     return body
     // }
 
+    // @Patch(":id")
+    // update(
+    //     // @Param() param:IdParamDto,
+    //     // @Param() {id}:IdParamDto,
+    //     @Param("id" , ParseIdPipe) id, 
+    //     @Body(
+    //     // new ValidationPipe({
+    //     //     whitelist: true,
+    //     //     forbidNonWhitelisted: true,
+    //     //     groups:['update'],
+    //     //     always:true
+    //     // })
+    //     )
+    //     body:CreatePropertyDto,
+    //     @Headers() header) {
+    //         return body
+    //     }
+
     @Patch(":id")
     update(
-        // @Param() param:IdParamDto,
-        // @Param() {id}:IdParamDto,
         @Param("id" , ParseIdPipe) id, 
-        @Body(
-        // new ValidationPipe({
-        //     whitelist: true,
-        //     forbidNonWhitelisted: true,
-        //     groups:['update'],
-        //     always:true
-        // })
-        )
-        body:CreatePropertyDto){
-            return body
+        @Body() body:CreatePropertyDto,
+        @RequestHeader(new ValidationPipe({whitelist: true, validateCustomDecorators: true})) header: HeadersDto ) {
+            return header
         }
+    // validateCustomDecorators: true yi unutma!!
 }

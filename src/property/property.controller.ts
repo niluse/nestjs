@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Headers, HttpCode, Param, ParseIntPipe, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, Headers, HttpCode, Param, ParseIntPipe, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { IdParamDto } from './dto/idParam.dto';
 import { ParseIdPipe } from './pipes/parseIdPipe';
@@ -7,6 +7,7 @@ import { createPropertySchema, CreatePropertyZodDto } from './dto/createProperty
 import { HeadersDto } from './dto/headers.dto';
 import { RequestHeader } from './pipes/request-header';
 import { PropertyService } from './property.service';
+import { UpdatePropertyDto } from './dto/updateProperty.dto';
 
 @Controller('property')
 export class PropertyController {
@@ -27,7 +28,7 @@ export class PropertyController {
     findOne(@Param('id', ParseIntPipe) id){
         // console.log(typeof id)
         // return id
-        return this.propertyService.findOne()
+        return this.propertyService.findOne(id)
     }
 
     // @Get(':id/:slug')
@@ -35,13 +36,18 @@ export class PropertyController {
     //     return`id: ${id}\nslug:${slug}`
     // }
 
-
     @Post()
-    @UsePipes(new ZodValidationPipe(createPropertySchema))
-    create(@Body() body: CreatePropertyZodDto){
+    create(@Body() dto: CreatePropertyDto){
         // return body
-        return this.propertyService.create()
+        return this.propertyService.create(dto)
     }
+
+    // @Post()
+    // @UsePipes(new ZodValidationPipe(createPropertySchema))
+    // create(@Body() body: CreatePropertyZodDto){
+    //     // return body
+    //     return this.propertyService.create(dto)
+    // }
 
     // @Post()
     // @UsePipes(
@@ -80,10 +86,16 @@ export class PropertyController {
     @Patch(":id")
     update(
         @Param("id" , ParseIdPipe) id, 
-        @Body() body:CreatePropertyDto,
+        @Body() body:UpdatePropertyDto,
         @RequestHeader(new ValidationPipe({whitelist: true, validateCustomDecorators: true})) header: HeadersDto ) {
             // return header
-            return this.propertyService.update()
+            return this.propertyService.update(id,body)
         }
     // validateCustomDecorators: true yi unutma!!
+
+    @Delete(':id')
+    delete(@Param('id',ParseIdPipe) id){
+        return this.propertyService.delete(id)
+    }
+
 }

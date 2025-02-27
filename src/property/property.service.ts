@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { NotFoundError } from 'rxjs';
 import { UpdatePropertyDto } from './dto/updateProperty.dto';
+import { PaginationDto } from './dto/pagination.dto';
+import { DEFAULT_PAGE_SIZE } from 'src/utils/constants';
 
 @Injectable()
 export class PropertyService {
@@ -20,8 +22,11 @@ export class PropertyService {
         if(!property) throw new NotFoundException()
         return property
     }
-    async findAll(){
-        return await this.propertyRepo.find()
+    async findAll(paginationDto:PaginationDto){
+        return await this.propertyRepo.find({
+            skip:paginationDto.skip,
+            take:paginationDto.limit ?? DEFAULT_PAGE_SIZE
+        })
     }
     async create(dto:CreatePropertyDto){
         return await this.propertyRepo.save(dto)

@@ -1,6 +1,9 @@
 // dbConfig.ts
 import { Property } from "src/entities/property.entity";
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export const pgConfig: PostgresConnectionOptions = {
     url: process.env.DATABASE_URL,

@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import { ConfigModule } from '@nestjs/config';
 import dbConfig from './config/db.config';
+import dbConfigProduction from './config/db.config.production';
 
 dotenv.config();
 
@@ -16,10 +17,10 @@ dotenv.config();
   imports: [ConfigModule.forRoot({
     isGlobal:true,
     expandVariables:true,
-    load:[dbConfig]
+    load:[dbConfig,dbConfigProduction]
   }),
   PropertyModule,TypeOrmModule.forRootAsync({
-    useFactory:dbConfig
+    useFactory: process.env.NODE_ENV === "production" ? dbConfigProduction : dbConfig
   })],
   controllers: [AppController],
   providers: [AppService],

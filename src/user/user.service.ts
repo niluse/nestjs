@@ -7,7 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private UserRepo:Repository<User> ){}
+  constructor(@InjectRepository(User) 
+  private UserRepo:Repository<User> 
+){}
 
   async create(createUserDto: CreateUserDto) {
     const user = await this.UserRepo.create(createUserDto)  //!! once bunu yapip sonraki satirda save e atamazsan calismaz !!
@@ -26,8 +28,11 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    return this.UserRepo.findOne({
+      where:{id},
+      select:['firstName','lastName','avatarUrl'],
+    });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
